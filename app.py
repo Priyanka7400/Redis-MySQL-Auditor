@@ -73,3 +73,26 @@ output_report = {
 }
 
 print(json.dumps(output_report, indent=2))
+# --- STEP 5: Exporting to JSON and CSV Files ---
+print("\n[5/4] Saving output reports to files...")
+
+# 1. JSON Report File Save Karna
+with open('audit_report.json', 'w') as json_file:
+    json.dump(output_report, json_file, indent=2)
+print("✓ Saved 'audit_report.json'")
+
+# 2. CSV Detailed Data File Save Karna
+import csv
+with open('consistency_audit_data.csv', mode='w', newline='') as csv_file:
+    writer = csv.writer(csv_file)
+    # Column Headers
+    writer.writerow(['User_ID', 'MySQL_Balance', 'Redis_Balance', 'Status'])
+    
+    # Rows Data
+    for user_id in range(1, 101):
+        mysql_bal = mysql_database[user_id]
+        redis_bal = redis_cache.get(user_id, -1)
+        status = "Synced" if mysql_bal == redis_bal else "Mismatch"
+        writer.writerow([user_id, mysql_bal, redis_bal, status])
+
+print("✓ Saved 'consistency_audit_data.csv' successfully!")
